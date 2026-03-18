@@ -16,13 +16,44 @@ class DocumentUploadForm(forms.ModelForm):
     class Meta:
         model = DocumentUpload
         fields = ['file']
+    
+    def clean_file(self):
+
+        file = self.cleaned_data.get('file')
+
+        allowed_extensions = ['pdf', 'docx', 'txt']
+
+        file_name = file.name.lower()
+        extension = file_name.split('.')[-1]
+
+        if extension not in allowed_extensions:
+            raise forms.ValidationError(
+                "Only PDF, DOCX, and TXT files are allowed. Images are not supported."
+            )
+
+        return file    
 
 
 class ImageUploadForm(forms.ModelForm):
     class Meta:
         model = ImageUpload
         fields = ['image']
+        
+    def clean_image(self):
 
+        image = self.cleaned_data.get('image')
+
+        allowed_extensions = ['jpg', 'jpeg', 'png']
+
+        file_name = image.name.lower()
+        extension = file_name.split('.')[-1]
+
+        if extension not in allowed_extensions:
+            raise forms.ValidationError(
+                "Only JPG, JPEG, and PNG images are allowed. Documents are not supported."
+            )
+
+        return image
 
 class TextInputForm(forms.ModelForm):
 

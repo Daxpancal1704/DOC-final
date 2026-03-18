@@ -36,9 +36,28 @@ def analyze_sentences(sentences):
 
     for sentence in sentences:
 
-        prediction = detect_ai(sentence)
+        # 🚫 Skip empty or useless input
+        if not sentence or not sentence.strip():
+            continue
 
-        results.append(prediction)
+        # 🔒 Hard limit (avoid RoBERTa crash)
+        words = sentence.split()
+
+        if len(words) > 400:
+            sentence = " ".join(words[:400])
+
+        try:
+            prediction = detect_ai(sentence)
+            results.append(prediction)
+
+        except Exception as e:
+            # 🧠 Don't let one failure break entire pipeline
+            results.append({
+                "sentence": sentence,
+                "classification": "Error",
+                "confidence": 0,
+                "error": str(e)
+            })
 
     return results
 

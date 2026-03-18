@@ -18,7 +18,8 @@ from django.shortcuts import get_object_or_404, redirect
 from .models import ScanHistory
 from django.core.paginator import Paginator
 import json
-
+from django.db.models import Avg, Count
+from django.db.models.functions import TruncDate
 
 
 def home(request):
@@ -176,7 +177,7 @@ def image_scanner(request):
             ai_prob = result["ai_probability"]
             human_prob = result["human_probability"]
 
-            confidence = max(ai_prob, human_prob) / 100
+            confidence = round(max(ai_prob, human_prob) / 100 * 100, 2)
 
             # Detect AI tool
             if ai_prob > 60:
@@ -303,9 +304,65 @@ def logout_view(request):
     logout(request)
     return redirect("home")
 
+
+
 @login_required
 def dashboard(request):
-    return render(request, "dashboard.html")
+    user = request.user
+    scans = ScanHistory.objects.filter(user=user)
+
+    total_scans = scans.count()
+    doc_count = scans.filter(scan_type="document").count()
+    img_count = scans.filter(scan_type="image").count()
+    text_count = scans.filter(scan_type="text").count()
+
+    ai_count = scans.filter(result__icontains="ai").count()
+    human_count = scans.filter(result__icontains="human").count()
+    mixed_count = scans.filter(result__icontains="mixed").count()
+
+    # ✅ Average Accuracy
+    avg_accuracy = scans.aggregate(avg=Avg('accuracy'))['avg'] or 0
+
+    # ✅ Insight
+    if ai_count > human_count:
+        insight = "Most content is AI generated"
+    else:
+        insight = "Most content is human written"
+
+    # ✅ Weekly Data
+    weekly = (
+        scans.annotate(date=TruncDate('created_at'))
+        .values('date')
+        .annotate(count=Count('id'))
+        .order_by('date')
+    )
+
+    dates = [str(item['date']) for item in weekly]
+    counts = [item['count'] for item in weekly]
+
+    # ✅ Recent Activity
+    recent_scans = scans.order_by('-created_at')[:5]
+    # filter_type = request.GET.get('type')
+
+    # if filter_type and filter_type != "all":
+    #   scans = scans.filter(scan_type=filter_type)
+    
+    context = {
+        "total_scans": total_scans,
+        "doc_count": doc_count,
+        "img_count": img_count,
+        "text_count": text_count,
+        "ai_count": ai_count,
+        "human_count": human_count,
+        "mixed_count": mixed_count,
+        "avg_accuracy": round(avg_accuracy, 2),
+        "insight": insight,
+        "dates": dates,
+        "counts": counts,
+        "recent_scans": recent_scans,
+    }
+
+    return render(request, "dashboard.html", context)
 
 
 @login_required(login_url="/login/")
@@ -377,41 +434,177 @@ def scan_report(request, id):
         "confidence": confidence,
     })
 
+import json
+from django.shortcuts import get_object_or_404
+from django.http import HttpResponse
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, PageBreak
+from reportlab.lib.styles import getSampleStyleSheet
+
 @login_required(login_url='/login/')
 def download_report(request, id):
 
-
-
-    scan = ScanHistory.objects.get(id=id)
+    scan = get_object_or_404(ScanHistory, id=id, user=request.user)
 
     response = HttpResponse(content_type="application/pdf")
-
     response["Content-Disposition"] = f'attachment; filename="scan_report_{id}.pdf"'
 
     doc = SimpleDocTemplate(response)
-
     styles = getSampleStyleSheet()
+    styles["Title"].alignment = 1
 
     content = []
 
+    # 🔥 TITLE
     content.append(Paragraph("AI Content Detection Report", styles["Title"]))
-    content.append(Spacer(1,20))
-
-    content.append(Paragraph(f"Scan Type : {scan.scan_type}", styles["Normal"]))
-    content.append(Paragraph(f"Result : {scan.result}", styles["Normal"]))
-    content.append(Paragraph(f"Accuracy : {scan.accuracy}", styles["Normal"]))
-    content.append(Paragraph(f"Date : {scan.created_at}", styles["Normal"]))
     content.append(Spacer(1, 20))
+
+    # 🔥 BASIC INFO
+    content.append(Paragraph(f"<b>Scan Type:</b> {scan.scan_type}", styles["Normal"]))
+    content.append(Paragraph(f"<b>Result:</b> {scan.result}", styles["Normal"]))
+    content.append(Paragraph(f"<b>Accuracy:</b> {scan.accuracy}%", styles["Normal"]))
+    content.append(Paragraph(f"<b>Date:</b> {scan.created_at}", styles["Normal"]))
+    content.append(Spacer(1, 20))
+
+    # ✅ FINAL VERDICT
+    if scan.result == "AI":
+        verdict_color = "red"
+    elif scan.result == "Human":
+        verdict_color = "green"
+    else:
+        verdict_color = "orange"
+
+    content.append(Paragraph(
+        f"<font color='{verdict_color}' size=14><b>Final Verdict: {scan.result} Generated</b></font>",
+        styles["Normal"]
+    ))
+    content.append(Spacer(1, 20))
+
+    # 🔥 SUMMARY
     content.append(Paragraph("Detection Summary", styles["Heading2"]))
+    content.append(Spacer(1, 10))
+    content.append(Paragraph(f"<b>AI Content:</b> {scan.accuracy}%", styles["Normal"]))
 
-    content.append(Paragraph(f"AI Content Percentage : {scan.accuracy}", styles["Normal"]))
+    # ✅ CONFIDENCE
+    if scan.accuracy > 80:
+        level = "High Confidence"
+    elif scan.accuracy > 60:
+        level = "Moderate Confidence"
+    else:
+        level = "Low Confidence"
 
-    content.append(Spacer(1,20))
+    content.append(Paragraph(f"<b>Confidence Level:</b> {level}", styles["Normal"]))
+    content.append(Spacer(1, 20))
 
-    content.append(Paragraph("Analysis Details:", styles["Heading2"]))
-    content.append(Paragraph(scan.details, styles["Normal"]))
+    # 👉 PARSE JSON SAFELY
+    try:
+        details = json.loads(scan.details)
 
-    doc.build(content)
+        if isinstance(details, dict):
+            details = [details]
+
+        details = [d for d in details if isinstance(d, dict)]
+
+    except:
+        details = []
+
+    # ✅ DISTRIBUTION (ONLY ONCE, CORRECT WAY)
+    ai_count = 0
+    human_count = 0
+    mixed_count = 0
+
+    for r in details:
+        cls = r.get("classification")
+
+        if cls == "AI":
+            ai_count += 1
+        elif cls == "Human":
+            human_count += 1
+        elif cls == "Mixed":
+            mixed_count += 1
+
+    content.append(Paragraph("Content Distribution", styles["Heading2"]))
+    content.append(Spacer(1, 10))
+    content.append(Paragraph(f"AI Sentences: {ai_count}", styles["Normal"]))
+    content.append(Paragraph(f"Human Sentences: {human_count}", styles["Normal"]))
+    content.append(Paragraph(f"Mixed Sentences: {mixed_count}", styles["Normal"]))
+    content.append(Spacer(1, 20))
+
+    # ✅ WARNING
+    if scan.result == "AI":
+        warning = "This content is likely AI-generated. Verify before use."
+    elif scan.result == "Mixed":
+        warning = "Mixed signals detected. Manual review recommended."
+    else:
+        warning = "Content appears human-written."
+
+    content.append(Paragraph(
+        f"<font color='orange'><b>Note:</b> {warning}</font>",
+        styles["Normal"]
+    ))
+    content.append(Spacer(1, 20))
+
+    # 🔥 ANALYSIS DETAILS
+    content.append(Paragraph("Analysis Details", styles["Heading2"]))
+    content.append(Spacer(1, 10))
+
+    if scan.scan_type in ["text", "document"] and details:
+
+        for r in details:
+            if not isinstance(r, dict):
+                continue
+
+            sentence = r.get("sentence", "")
+            sentence = sentence[:300] + "..." if len(sentence) > 300 else sentence
+
+            classification = r.get("classification", "")
+            ai_prob = round(r.get("ai_probability", 0) * 100, 2)
+            human_prob = round(r.get("human_probability", 0) * 100, 2)
+
+            # 🎨 COLOR
+            if classification == "AI":
+                color = "red"
+            elif classification == "Human":
+                color = "green"
+            else:
+                color = "orange"
+
+            text = f"""
+            <font color="{color}">
+            <b>Sentence:</b> {sentence}<br/>
+            <b>Type:</b> {classification}<br/>
+            <b>AI:</b> {ai_prob}% | <b>Human:</b> {human_prob}%
+            </font>
+            """
+
+            content.append(Paragraph(text, styles["BodyText"]))
+            content.append(Spacer(1, 15))
+
+    else:
+        content.append(Paragraph(
+            "<font color='blue'>This is an image scan — no sentence-level analysis available.</font>",
+            styles["Normal"]
+        ))
+        content.append(Spacer(1, 10))
+        content.append(Paragraph(f"<b>AI Probability:</b> {scan.accuracy}%", styles["Normal"]))
+
+    # ✅ PAGE BREAK (FIXES LAYOUT)
+    content.append(PageBreak())
+
+    # ✅ METADATA
+    content.append(Paragraph("Report Metadata", styles["Heading2"]))
+    content.append(Spacer(1, 10))
+    content.append(Paragraph(f"Report ID: {scan.id}", styles["Normal"]))
+    content.append(Paragraph("Generated By: AI Scanner System", styles["Normal"]))
+
+    # ✅ HEADER + FOOTER
+    def add_header_footer(canvas, doc):
+        canvas.setFont("Helvetica-Bold", 12)
+        canvas.drawString(180, 800, "AI Content Detection Report")
+
+        canvas.setFont("Helvetica", 9)
+        canvas.drawString(200, 20, "Generated by AI Scanner")
+
+    doc.build(content, onFirstPage=add_header_footer, onLaterPages=add_header_footer)
 
     return response
 

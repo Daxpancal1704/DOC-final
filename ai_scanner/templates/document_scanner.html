@@ -10,7 +10,15 @@
 <h3 class="mb-4 page-title">Document Scanner</h3>
 
 <div class="card upload-card p-4 mb-4 shadow-sm">
+{% if form.errors %}
 
+<div class="alert alert-danger">
+
+{{ form.errors }}
+
+</div>
+
+{% endif %}
 <form method="POST" enctype="multipart/form-data">
 
 {% csrf_token %}

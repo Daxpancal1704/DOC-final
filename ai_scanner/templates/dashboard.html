@@ -6,55 +6,171 @@
 <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
-<div class="dashboard-page">
+<div class="dashboard-wrapper">
 
-<div class="dashboard-container">
+    <div class="dashboard-container">
 
-<h2 class="dashboard-title">Dashboard</h2>
+        <h2 class="dashboard-title">Dashboard</h2>
 
-<p class="welcome-text">
-Welcome <strong>{{ request.user.username }}</strong>
-</p>
+        <!-- STATS -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h4>Total</h4>
+                <p>{{ total_scans }}</p>
+            </div>
 
-<div class="tool-grid">
+            <div class="stat-card">
+                <h4>Documents</h4>
+                <p>{{ doc_count }}</p>
+            </div>
 
-<div class="tool-card">
-<i class="fa-solid fa-file-lines tool-icon"></i>
-<h5>Document Scanner</h5>
-<p>Analyze uploaded documents</p>
-<a href="/document/" class="tool-btn blue">Open</a>
+            <div class="stat-card">
+                <h4>Images</h4>
+                <p>{{ img_count }}</p>
+            </div>
+
+            <div class="stat-card">
+                <h4>Text</h4>
+                <p>{{ text_count }}</p>
+            </div>
+        </div>
+
+        <!-- INSIGHT -->
+        <div class="insight-box">
+            <p><strong>Insight:</strong> {{ insight }}</p>
+            <p><strong>Average Accuracy:</strong> {{ avg_accuracy }}%</p>
+        </div>
+        <!-- downloded button -->
+        <!-- <div style="text-align:center; margin-top:20px;">
+            <td>
+    {% if scan.id %}
+        <a href="{% url 'download_report' scan.id %}" class="btn-download">
+            Download
+        </a>
+    {% endif %}
+</td>
+        </div> -->
+        <!-- <div class="filter-box">
+            <label>Filter by Type:</label>
+            <form method="get">
+                <select name="type" onchange="this.form.submit()">
+                    <option value="all" {% if request.GET.type == "all" %}selected{% endif %}>All</option>
+        <option value="document" {% if request.GET.type == "document" %}selected{% endif %}>Document</option>
+        <option value="image" {% if request.GET.type == "image" %}selected{% endif %}>Image</option>
+        <option value="text" {% if request.GET.type == "text" %}selected{% endif %}>Text</option>
+                </select>
+            </form>
+        </div> -->
+        <!-- CHARTS -->
+        <div class="charts-wrapper">
+            <div class="chart-card">
+                <h5>Activity Distribution</h5>
+                <canvas id="activityChart"></canvas>
+            </div>
+
+            <div class="chart-card">
+                <h5>AI vs Human Analysis</h5>
+                <canvas id="resultChart"></canvas>
+            </div>
+        </div>
+
+        <!-- WEEKLY CHART -->
+        <div class="charts-wrapper">
+            <div class="chart-card">
+                <h5>Weekly Usage</h5>
+                <canvas id="weeklyChart"></canvas>
+            </div>
+        </div>
+
+        <!-- RECENT ACTIVITY -->
+        <div class="recent-box">
+            <h5>Recent Activity</h5>
+            <table>
+                <tr>
+                    <th>Type</th>
+                    <th>Result</th>
+                    <th>Date</th>
+                </tr>
+                {% for scan in recent_scans %}
+                <tr>
+                    <td>{{ scan.scan_type }}</td>
+                    <td>{{ scan.result }}</td>
+                    <td>{{ scan.created_at|date:"d M Y" }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+
+    </div>
+
 </div>
 
-<div class="tool-card">
-<i class="fa-solid fa-image tool-icon"></i>
-<h5>Image Scanner</h5>
-<p>Detect AI generated images</p>
-<a href="/image/" class="tool-btn green">Open</a>
-</div>
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<div class="tool-card">
-<i class="fa-solid fa-font tool-icon"></i>
-<h5>Text Analyzer</h5>
-<p>Analyze pasted text</p>
-<a href="/text/" class="tool-btn orange">Open</a>
-</div>
+<!-- JS -->
+<script>
+const doc = {{ doc_count|default:0 }};
+const img = {{ img_count|default:0 }};
+const text = {{ text_count|default:0 }};
 
-</div>
+const ai = {{ ai_count|default:0 }};
+const human = {{ human_count|default:0 }};
+const mixed = {{ mixed_count|default:0 }};
 
-<div class="dashboard-actions">
+const dates = {{ dates|safe }};
+const counts = {{ counts|safe }};
 
-<a href="/history/" class="action-btn history">
-<i class="fa-solid fa-clock"></i> Scan History
-</a>
+// Activity Chart
+new Chart(document.getElementById('activityChart'), {
+    type: 'pie',
+    data: {
+        labels: ['Document', 'Image', 'Text'],
+        datasets: [{
+            data: [doc, img, text],
+            backgroundColor: ['#36A2EB', '#FF6384', '#FFCE56']
+        }]
+    }
+});
 
-<a href="/logout/" class="action-btn logout">
-<i class="fa-solid fa-right-from-bracket"></i> Logout
-</a>
+// Result Chart
+new Chart(document.getElementById('resultChart'), {
+    type: 'doughnut',
+    data: {
+        labels: ['AI', 'Human', 'Mixed'],
+        datasets: [{
+            data: [ai, human, mixed],
+            backgroundColor: ['#ff4d4d', '#4CAF50', '#FFC107']
+        }]
+    }
+});
 
-</div>
-
-</div>
-
-</div>
+// Weekly Chart
+new Chart(document.getElementById('weeklyChart'), {
+    type: 'bar',
+    data: {
+        labels: dates,
+        datasets: [{
+            label: 'Scans',
+            data: counts,
+            backgroundColor: '#36A2EB'
+        }]
+    }
+});
+</script>
 
 {% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+

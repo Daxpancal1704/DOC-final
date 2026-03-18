@@ -26,7 +26,7 @@
 
 <h3>Analysis Details</h3>
 
-{% if scan.scan_type == "document" %}
+{% if scan.scan_type == "document" or scan.scan_type == "text" %}
 
     {% for r in details %}
 
@@ -39,15 +39,16 @@
         {% endif %}
 
         <strong>Sentence:</strong> {{ r.sentence }} <br>
-        AI Probability: {{ r.ai_probability }} |
-        Human Probability: {{ r.human_probability }}
+        <strong>Classification:</strong> {{ r.classification }} <br>
+        <strong>AI Probability:</strong> {{ r.ai_probability }}% <br>
+        <strong>Human Probability:</strong> {{ r.human_probability }}% <br>
 
         </p>
         <hr>
 
     {% endfor %}
 
-{% else %}
+{% elif scan.scan_type == "image" %}
 
     <p style="color:cyan;">
         This is an image scan — no sentence-level analysis available.

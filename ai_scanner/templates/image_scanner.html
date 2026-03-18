@@ -19,6 +19,13 @@
     <div class="card-body text-center">
 
         <h4 class="upload-title">Upload Image</h4>
+        {% if form.errors %}
+
+<div class="alert alert-danger">
+{{ form.errors }}
+</div>
+
+{% endif %}
 
         <form method="POST" enctype="multipart/form-data">
 
@@ -106,7 +113,7 @@ style="width: {{ result.human_probability }}%">
 
 </div>
 
-<p><strong>Confidence Score :</strong> {{ confidence }}</p>
+<p><strong>Confidence Score :</strong> {{ confidence }}%</p>
 
 {% if tool %}
 <p><strong>Possible AI Tool :</strong> {{ tool }}</p>
