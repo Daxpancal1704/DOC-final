@@ -20,7 +20,11 @@ from django.core.paginator import Paginator
 import json
 from django.db.models import Avg, Count
 from django.db.models.functions import TruncDate
-
+import json
+from django.shortcuts import get_object_or_404
+from django.http import HttpResponse
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, PageBreak
+from reportlab.lib.styles import getSampleStyleSheet
 
 def home(request):
     return render(request,'home.html')
@@ -58,8 +62,6 @@ def login_view(request):
         form = AuthenticationForm()
 
     return render(request, "login.html", {"form": form})
-
-
 
 def document_scanner(request):
 
@@ -434,11 +436,7 @@ def scan_report(request, id):
         "confidence": confidence,
     })
 
-import json
-from django.shortcuts import get_object_or_404
-from django.http import HttpResponse
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, PageBreak
-from reportlab.lib.styles import getSampleStyleSheet
+
 
 @login_required(login_url='/login/')
 def download_report(request, id):
