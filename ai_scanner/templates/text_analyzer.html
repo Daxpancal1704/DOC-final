@@ -1,0 +1,190 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/home.css' %}">
+<link rel="stylesheet" href="{% static 'css/text.css' %}">
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+<h3 class="text-analyzer-title">Text Analyzer</h3>
+
+<!-- TEXT INPUT PANEL -->
+
+<div class="card p-4 shadow">
+
+<form method="POST">
+
+{% csrf_token %}
+
+<label class="form-label">Enter Text</label>
+
+<textarea
+name="text"
+id="textInput"
+class="form-control"
+rows="10"
+maxlength="5000"
+required
+></textarea>
+
+<p id="charCount" class="text-muted">
+0 / 5000 characters
+</p>
+
+<button class="btn btn-primary mt-3">
+Analyze Text
+</button>
+
+</form>
+
+</div>
+
+
+{% if results %}
+
+<!-- LEGEND -->
+
+<div class="card mt-4 shadow">
+<div class="card-body">
+
+<h4>AI Text Detection Result</h4>
+
+<div class="card p-3 mt-3">
+
+<h5>Legend</h5>
+
+<p style="color:red;">🔴 AI Generated</p>
+<p style="color:green;">🟢 Human Written</p>
+<p style="color:orange;">🟡 Mixed / Uncertain</p>
+
+</div>
+
+</div>
+</div>
+
+
+<!-- RESULT PANEL -->
+
+<div class="card mt-4 shadow">
+<div class="card-body">
+
+<h4>Text Analysis Result</h4>
+
+<p><strong>AI Content :</strong> {{ ai_percent }}%</p>
+
+<p><strong>Human Content :</strong> {{ human_percent }}%</p>
+
+<p><strong>Mixed :</strong> {{ mixed_percent }}%</p>
+
+<p><strong>Confidence Score :</strong> {{ confidence }}%</p>
+
+</div>
+</div>
+
+
+<!-- DETECTION VISUALIZATION -->
+
+<div class="card mt-4 shadow">
+<div class="card-body">
+
+<h5>Detection Visualization</h5>
+
+<p>AI Generated</p>
+
+<div class="progress mb-3">
+<div class="progress-bar bg-danger"
+style="width: {{ ai_percent }}%">
+{{ ai_percent }}%
+</div>
+</div>
+
+<p>Human Written</p>
+
+<div class="progress mb-3">
+<div class="progress-bar bg-success"
+style="width: {{ human_percent }}%">
+{{ human_percent }}%
+</div>
+</div>
+
+<p>Mixed</p>
+
+<div class="progress">
+<div class="progress-bar bg-warning"
+style="width: {{ mixed_percent }}%">
+{{ mixed_percent }}%
+</div>
+</div>
+
+</div>
+</div>
+
+
+<!-- FINAL ANALYSIS -->
+
+<div class="card mt-4 shadow">
+<div class="card-body">
+
+<h5>Final Analysis</h5>
+
+{% if ai_percent > human_percent and ai_percent > mixed_percent %}
+
+<p class="text-danger">
+This text appears to be mostly AI Generated.
+</p>
+
+{% elif human_percent > ai_percent and human_percent > mixed_percent %}
+
+<p class="text-success">
+This text appears to be written by a Human.
+</p>
+
+{% else %}
+
+<p class="text-warning">
+The system cannot confidently determine the author. The text appears mixed.
+</p>
+
+{% endif %}
+
+</div>
+</div>
+
+{% endif %}
+{% if scan_id %}
+
+<div class="text-center mt-4">
+
+{% if user.is_authenticated %}
+
+<a href="{% url 'download_report' scan_id %}" class="btn btn-success">
+Download Report
+</a>
+{% else %}
+
+<a href="{% url 'login' %}" class="btn btn-warning">
+Login to Download
+</a>
+
+{% endif %}
+
+</div>
+
+{% endif %}
+
+<script>
+
+const textarea = document.getElementById("textInput")
+const counter = document.getElementById("charCount")
+
+textarea.addEventListener("input", () => {
+
+counter.textContent =
+textarea.value.length + " / 5000 characters"
+
+})
+
+</script>
+<script src="{% static 'js/home.js' %}"></script>
+
+{% endblock %}

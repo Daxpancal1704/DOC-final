@@ -1,0 +1,206 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'css/home.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<div class="ai-layout">
+
+  <!-- ── HERO ── -->
+  <div class="hero-panel">
+
+    <!-- Animated ring decorations -->
+    <div class="hero-rings" aria-hidden="true">
+      <div class="ring ring-1"></div>
+      <div class="ring ring-2"></div>
+      <div class="ring ring-3"></div>
+    </div>
+
+    <!-- Floating particles -->
+    <div class="particles" aria-hidden="true">
+      <span></span><span></span><span></span>
+      <span></span><span></span><span></span>
+    </div>
+
+    <div class="hero-badge">
+      <i class="fa-solid fa-circle-bolt"></i>
+      Powered by Artificial Intelligence
+    </div>
+
+    <h1 class="hero-title">
+      <span class="word-reveal" style="--d:0ms">Detect.</span>
+      <span class="word-reveal accent-word" style="--d:120ms">Analyze.</span>
+      <span class="word-reveal" style="--d:240ms">Verify.</span>
+    </h1>
+
+    <p class="hero-sub">
+      Advanced AI detection across documents, images, and text —<br>
+      results you can trust in seconds.
+    </p>
+
+    <div class="hero-stats">
+      <div class="stat">
+        <span class="stat-num" data-target="99">0</span><span class="stat-sym">%</span>
+        <span class="stat-label">Accuracy</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat">
+        <span class="stat-num" data-target="3">0</span><span class="stat-sym">s</span>
+        <span class="stat-label">Avg. Speed</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat">
+        <span class="stat-num" data-target="12">0</span><span class="stat-sym">K+</span>
+        <span class="stat-label">Scans Done</span>
+      </div>
+    </div>
+
+    <div class="hero-scroll-hint">
+      <span>Explore Tools</span>
+      <i class="fa-solid fa-chevron-down bounce-arrow"></i>
+    </div>
+
+  </div>
+
+  <!-- ── TOOL GRID ── -->
+  <div class="tools-wrapper">
+
+    <div class="section-label">
+      <span class="label-line"></span>
+      <span>Choose a Scanner</span>
+      <span class="label-line"></span>
+    </div>
+
+    <div class="cards-grid">
+
+      <!-- Document Card -->
+      <div class="tool-card doc" style="--card-delay:0ms">
+        <div class="card-glow"></div>
+        <div class="card-top">
+          <div class="card-icon-wrap doc-icon">
+            <i class="fa-solid fa-file-lines"></i>
+            <div class="icon-ping"></div>
+          </div>
+          <div class="card-badge">PDF · DOCX · TXT</div>
+        </div>
+        <div class="card-body-content">
+          <h3>Document Scan</h3>
+          <p>Upload any document and let AI analyse for generated or manipulated content with high precision.</p>
+          <ul class="card-features">
+            <li><i class="fa-solid fa-check"></i> Multi-format support</li>
+            <li><i class="fa-solid fa-check"></i> Paragraph-level detection</li>
+            <li><i class="fa-solid fa-check"></i> Instant report</li>
+          </ul>
+        </div>
+        <a href="/document/" class="card-cta">
+          <span>Launch Scanner</span>
+          <i class="fa-solid fa-arrow-right"></i>
+        </a>
+      </div>
+
+      <!-- Image Card -->
+      <div class="tool-card img" style="--card-delay:120ms">
+        <div class="card-glow"></div>
+        <div class="card-top">
+          <div class="card-icon-wrap img-icon">
+            <i class="fa-solid fa-image"></i>
+            <div class="icon-ping"></div>
+          </div>
+          <div class="card-badge">JPG · PNG · WEBP</div>
+        </div>
+        <div class="card-body-content">
+          <h3>Image Scan</h3>
+          <p>Detect AI-generated or deepfake imagery with advanced visual fingerprint analysis.</p>
+          <ul class="card-features">
+            <li><i class="fa-solid fa-check"></i> GAN & diffusion detection</li>
+            <li><i class="fa-solid fa-check"></i> Metadata inspection</li>
+            <li><i class="fa-solid fa-check"></i> Visual heatmap</li>
+          </ul>
+        </div>
+        <a href="/image/" class="card-cta">
+          <span>Launch Scanner</span>
+          <i class="fa-solid fa-arrow-right"></i>
+        </a>
+      </div>
+
+      <!-- Text Card -->
+      <div class="tool-card txt" style="--card-delay:240ms">
+        <div class="card-glow"></div>
+        <div class="card-top">
+          <div class="card-icon-wrap txt-icon">
+            <i class="fa-solid fa-font"></i>
+            <div class="icon-ping"></div>
+          </div>
+          <div class="card-badge">Any Language</div>
+        </div>
+        <div class="card-body-content">
+          <h3>Text Analyzer</h3>
+          <p>Paste any text to uncover AI authorship patterns, perplexity scores, and burstiness metrics.</p>
+          <ul class="card-features">
+            <li><i class="fa-solid fa-check"></i> GPT / LLaMA detection</li>
+            <li><i class="fa-solid fa-check"></i> Sentence-level scoring</li>
+            <li><i class="fa-solid fa-check"></i> Confidence percentage</li>
+          </ul>
+        </div>
+        <a href="/text/" class="card-cta">
+          <span>Launch Scanner</span>
+          <i class="fa-solid fa-arrow-right"></i>
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── HOW IT WORKS ── -->
+  <div class="how-section reveal">
+    <div class="section-label">
+      <span class="label-line"></span>
+      <span>How It Works</span>
+      <span class="label-line"></span>
+    </div>
+    <div class="steps-row">
+      <div class="step">
+        <div class="step-num">01</div>
+        <i class="fa-solid fa-upload step-icon"></i>
+        <h4>Upload</h4>
+        <p>Drop your file or paste your text into the scanner.</p>
+      </div>
+      <div class="step-connector"><i class="fa-solid fa-chevron-right"></i></div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <i class="fa-solid fa-microchip step-icon"></i>
+        <h4>Analyse</h4>
+        <p>Our AI model scans content for machine-generated patterns.</p>
+      </div>
+      <div class="step-connector"><i class="fa-solid fa-chevron-right"></i></div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <i class="fa-solid fa-chart-pie step-icon"></i>
+        <h4>Report</h4>
+        <p>Receive a detailed confidence report instantly.</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="{% static 'js/home.js' %}"></script>
+
+<script>
+/* ── Counter animation ── */
+document.querySelectorAll('.stat-num').forEach(el => {
+  const target = +el.dataset.target;
+  let current = 0;
+  const step = Math.max(target / 60, 0.05);
+  const timer = setInterval(() => {
+    current = Math.min(current + step, target);
+    el.textContent = Math.floor(current);
+    if (current >= target) clearInterval(timer);
+  }, 22);
+});
+</script>
+
+{% endblock %}

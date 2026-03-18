@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+<h1 style="text-align:center;">AI Content Detection Report</h1>
+
+<hr>
+
+<h3>Scan Information</h3>
+
+<p><strong>Scan Type:</strong> {{ scan.scan_type }}</p>
+<p><strong>Result:</strong> {{ scan.result }}</p>
+<p><strong>Date:</strong> {{ scan.created_at }}</p>
+
+<hr>
+
+<h3>Detection Summary</h3>
+
+<p><strong>AI Accuracy:</strong> {{ ai_percent }}%</p>
+<p><strong>Human Accuracy:</strong> {{ human_percent }}%</p>
+<p><strong>Confidence Score:</strong> {{ confidence }}%</p>
+
+<hr>
+
+<h3>Analysis Details</h3>
+
+{% if scan.scan_type == "document" %}
+
+    {% for r in details %}
+
+        {% if r.classification == "AI" %}
+            <p style="color:red;">
+        {% elif r.classification == "Human" %}
+            <p style="color:green;">
+        {% else %}
+            <p style="color:orange;">
+        {% endif %}
+
+        <strong>Sentence:</strong> {{ r.sentence }} <br>
+        AI Probability: {{ r.ai_probability }} |
+        Human Probability: {{ r.human_probability }}
+
+        </p>
+        <hr>
+
+    {% endfor %}
+
+{% else %}
+
+    <p style="color:cyan;">
+        This is an image scan — no sentence-level analysis available.
+    </p>
+
+    <p>
+        <strong>AI Probability:</strong> {{ ai_percent }}% <br>
+        <strong>Human Probability:</strong> {{ human_percent }}%
+    </p>
+
+{% endif %}
+</tbody>
+
+</table>
+
+</div>
+
+
+<div class="text-center mt-4">
+
+{% if user.is_authenticated %}
+
+<a href="/download/{{ scan.id }}/" class="btn btn-success">
+Download Report (PDF)
+</a>
+
+{% else %}
+
+<div class="alert alert-warning">
+Login required to download this report
+</div>
+
+<a href="/login/" class="btn btn-primary">
+Login
+</a>
+
+{% endif %}
+
+</div>
+
+</div>
+
+{% endblock %}

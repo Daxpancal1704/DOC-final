@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<div class="dashboard-page">
+
+<div class="dashboard-container">
+
+<h2 class="dashboard-title">Dashboard</h2>
+
+<p class="welcome-text">
+Welcome <strong>{{ request.user.username }}</strong>
+</p>
+
+<div class="tool-grid">
+
+<div class="tool-card">
+<i class="fa-solid fa-file-lines tool-icon"></i>
+<h5>Document Scanner</h5>
+<p>Analyze uploaded documents</p>
+<a href="/document/" class="tool-btn blue">Open</a>
+</div>
+
+<div class="tool-card">
+<i class="fa-solid fa-image tool-icon"></i>
+<h5>Image Scanner</h5>
+<p>Detect AI generated images</p>
+<a href="/image/" class="tool-btn green">Open</a>
+</div>
+
+<div class="tool-card">
+<i class="fa-solid fa-font tool-icon"></i>
+<h5>Text Analyzer</h5>
+<p>Analyze pasted text</p>
+<a href="/text/" class="tool-btn orange">Open</a>
+</div>
+
+</div>
+
+<div class="dashboard-actions">
+
+<a href="/history/" class="action-btn history">
+<i class="fa-solid fa-clock"></i> Scan History
+</a>
+
+<a href="/logout/" class="action-btn logout">
+<i class="fa-solid fa-right-from-bracket"></i> Logout
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+{% endblock %}
