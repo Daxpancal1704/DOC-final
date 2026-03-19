@@ -174,7 +174,9 @@ def image_scanner(request):
             tensor = preprocess_image(image_path)
             tensor_shape = tensor.shape
 
-            result = detect_ai_image(tensor)
+            result = detect_ai_image(tensor, image_path)
+            confidence = result["confidence"]
+            tool = result["type"]
 
             ai_prob = result["ai_probability"]
             human_prob = result["human_probability"]

@@ -121,7 +121,14 @@ style="width: {{ result.human_probability }}%">
 
 </div>
 </div>
+<p><strong>Generation Type:</strong> {{ result.type }}</p>
 
+<h6>Detected Artifacts:</h6>
+<ul>
+{% for art in result.artifacts %}
+    <li>{{ art }}</li>
+{% endfor %}
+</ul>
 
 <div class="card mt-4 shadow summary-card">
 
@@ -182,3 +189,8 @@ Login to Download Report
 <script src="{% static 'js/image_scanner.js' %}"></script>
 
 {% endblock %}
+
+
+
+
+
