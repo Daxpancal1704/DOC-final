@@ -1,0 +1,172 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'css/image_scanner.css' %}">
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+<link rel="stylesheet" href="{% static 'css/home.css' %}">
+
+<div class="container scanner-page">
+
+<h3 class="mb-4 text-center">AI Image Scanner</h3>
+
+<div class="row g-4 align-items-start justify-content-center">
+
+<!-- LEFT COLUMN -->
+<div class="col-lg-5 mx-auto">
+<div class="card upload-card shadow">
+    <div class="card-body text-center">
+
+        <h4 class="upload-title">Upload Image</h4>
+
+        {% if form.errors %}
+        <div class="alert alert-danger">
+            {{ form.errors }}
+        </div>
+        {% endif %}
+
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="upload-area">
+                <i class="fa-solid fa-cloud-arrow-up upload-icon"></i>
+
+                <p class="upload-text">Drag & Drop your image here</p>
+                <span class="upload-small">or choose file</span>
+
+                {{ form.as_p }}
+            </div>
+
+            <button class="btn btn-primary upload-btn mt-3">
+                Upload Image
+            </button>
+        </form>
+
+    </div>
+</div>
+
+{% if image_url %}
+<div class="card mt-4 shadow">
+    <div class="card-body text-center">
+        <h6>Uploaded Image</h6>
+        <img src="{{ image_url }}" class="img-fluid preview-img">
+    </div>
+</div>
+{% endif %}
+
+</div>
+
+<!-- RIGHT COLUMN -->
+<div class="col-lg-7">
+
+{% if result %}
+
+<div class="card shadow result-card">
+<div class="card-body">
+
+<h4 class="mb-4">Image Analysis Result</h4>
+
+<div class="score-box">
+
+<p>AI Generated</p>
+<div class="progress mb-3">
+    <div class="progress-bar bg-danger"
+         style="width: {{ result.ai_probability }}%">
+        {{ result.ai_probability }}%
+    </div>
+</div>
+
+<p>Human Photo</p>
+<div class="progress mb-3">
+    <div class="progress-bar bg-success"
+         style="width: {{ result.human_probability }}%">
+        {{ result.human_probability }}%
+    </div>
+</div>
+
+</div>
+
+<p>
+<strong>Confidence Score :</strong> {{ confidence }}%
+<small class="text-muted">(difference between AI and Human probability)</small>
+</p>
+
+{% if tool %}
+<p><strong>Possible AI Tool :</strong> {{ tool }}</p>
+{% endif %}
+
+<p><strong>Generation Type:</strong> {{ result.type }}</p>
+
+</div>
+</div>
+
+<!-- ARTIFACTS (only show if exist) -->
+{% if result.artifacts %}
+<div class="card mt-4 shadow">
+    <div class="card-body">
+        <h6>Detected Artifacts:</h6>
+        <ul>
+        {% for art in result.artifacts %}
+            <li>{{ art }}</li>
+        {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endif %}
+
+<!-- SUMMARY (FIXED LOGIC) -->
+<div class="card mt-4 shadow summary-card">
+<div class="card-body">
+
+<h5>Scan Summary</h5>
+
+{% if result.ai_probability > 75 %}
+
+<p class="text-danger summary-text">
+This image is likely AI Generated
+</p>
+
+{% elif result.ai_probability < 35 %}
+
+<p class="text-success summary-text">
+This image appears to be a Real Photograph
+</p>
+
+{% else %}
+
+<p class="text-warning summary-text">
+Result is Uncertain (Low Confidence)
+</p>
+
+{% endif %}
+
+</div>
+</div>
+
+<!-- DOWNLOAD BUTTON -->
+{% if scan_id %}
+<div class="text-center mt-4">
+
+{% if user.is_authenticated %}
+<a href="{% url 'download_report' scan_id %}" class="btn btn-success">
+Download Report
+</a>
+{% else %}
+<a href="{% url 'login' %}" class="btn btn-warning">
+Login to Download Report
+</a>
+{% endif %}
+
+</div>
+{% endif %}
+
+{% endif %}
+
+</div>
+</div>
+</div>
+
+<script src="{% static 'js/image_scanner.js' %}"></script>
+
+{% endblock %}

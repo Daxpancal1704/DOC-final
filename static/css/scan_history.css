@@ -1,0 +1,210 @@
+.history-page{
+margin-top:30px;
+}
+
+.page-title{
+font-weight:700;
+margin-bottom:20px;
+animation:fadeDown 0.6s ease;
+}
+
+/* card */
+
+.history-card{
+border-radius:14px;
+padding:10px;
+}
+
+/* table */
+
+.history-table{
+margin-bottom:0;
+}
+
+/* header */
+
+.history-table thead{
+background:#0d6efd;
+color:white;
+}
+
+.history-table th{
+padding:14px;
+font-weight:600;
+}
+
+/* rows */
+
+.history-row{
+transition:0.3s;
+}
+
+.history-row:hover{
+background:#f3f6ff;
+transform:scale(1.01);
+}
+
+/* file name */
+
+.file-name{
+font-weight:500;
+color:#0d6efd;
+}
+
+/* accuracy */
+
+.accuracy{
+font-weight:600;
+}
+
+/* result colors */
+
+.result{
+font-weight:600;
+}
+
+.result:contains("AI"){
+color:#dc3545;
+}
+
+.result:contains("Human"){
+color:#198754;
+}
+
+/* button */
+
+.report-btn{
+background:#6366f1;
+border:none;
+color:white;
+border-radius:20px;
+padding:5px 14px;
+transition:0.3s;
+}
+
+.report-btn:hover{
+background:#4f46e5;
+transform:scale(1.05);
+}
+
+/* animations */
+
+@keyframes fadeDown{
+from{
+opacity:0;
+transform:translateY(-20px);
+}
+to{
+opacity:1;
+transform:translateY(0);
+}
+}
+
+/* responsive */
+
+@media (max-width:992px){
+
+.history-table{
+font-size:14px;
+}
+
+}
+
+@media (max-width:768px){
+
+.page-title{
+font-size:22px;
+}
+
+.history-table th,
+.history-table td{
+padding:10px;
+}
+
+.report-btn{
+font-size:12px;
+}
+
+}body{
+background:url("/static/images/ai-bg.jpg") center/cover no-repeat;
+min-height:100vh;
+position:relative;
+}
+
+body::before{
+content:"";
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(5,15,35,0.75);
+z-index:-1;
+}
+
+.page-title{
+text-align:center;
+color:white;
+font-weight:600;
+margin-bottom:30px;
+}.history-table{
+color:white;
+}
+
+.history-table thead th{
+border-bottom:1px solid rgba(255,255,255,0.15);
+font-weight:600;
+}
+
+.history-row{
+transition:0.25s;
+}
+
+.history-row:hover{
+background:rgba(255,255,255,0.05);
+}.file-name{
+font-weight:500;
+color:#93c5fd;
+}.result{
+font-weight:500;
+}
+
+.result:contains("Human"){
+color:#4ade80;
+}
+
+.result:contains("AI"){
+color:#f87171;
+}.accuracy{
+color:#facc15;
+font-weight:500;
+}.report-btn{
+background:#6366f1;
+border:none;
+border-radius:20px;
+padding:4px 14px;
+transition:0.3s;
+}
+.history-card{
+box-shadow:0 10px 25px rgba(0,0,0,0.4);
+border:1px solid rgba(255,255,255,0.08);
+}
+.history-row{
+transition:0.25s;
+}
+
+.history-row:hover{
+background:rgba(255,255,255,0.05);
+}
+.report-btn:hover{
+background:#4f46e5;
+box-shadow:0 0 10px rgba(99,102,241,0.7);
+}.btn-primary{
+border-radius:20px;
+padding:5px 14px;
+}
+
+.btn-primary:hover{
+transform:translateY(-2px);
+box-shadow:0 8px 15px rgba(0,0,0,0.3);
+}

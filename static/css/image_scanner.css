@@ -1,0 +1,188 @@
+/* ================= BACKGROUND ================= */
+
+body{
+background:url("/static/images/ai-bg.jpg") center/cover no-repeat;
+min-height:100vh;
+position:relative;
+}
+
+body::before{
+content:"";
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(5,15,35,0.75);
+z-index:-1;
+}
+
+/* Upload area center */
+
+.upload-area{
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+text-align:center;
+}
+
+
+/* File input styling */
+
+.upload-area input[type="file"]{
+margin-top:10px;
+background:#1f2937;
+border:1px solid rgba(255,255,255,0.2);
+padding:6px 10px;
+border-radius:6px;
+color:white;
+max-width:220px;
+}
+
+
+/* Fix long filename overflow */
+
+.upload-area input[type="file"]::-webkit-file-upload-button{
+background:#2563eb;
+border:none;
+padding:6px 12px;
+border-radius:5px;
+color:white;
+cursor:pointer;
+}
+/* ================= PAGE ================= */
+
+.scanner-page{
+text-align:center;
+}
+
+.scanner-page h3{
+color:white;
+font-weight:600;
+margin-bottom:25px;
+}
+
+.scanner-page .row{
+max-width:900px;
+margin:auto;
+}
+
+
+/* ================= CARDS ================= */
+
+.upload-card,
+.result-card,
+.summary-card{
+background:rgba(10,20,40,0.9);
+border:none;
+border-radius:16px;
+color:white;
+backdrop-filter:blur(8px);
+}
+
+
+/* ================= UPLOAD CARD ================= */
+
+.upload-card{
+max-width:650px;
+margin:auto;
+padding:10px;
+}
+
+
+/* ================= UPLOAD AREA ================= */
+
+.upload-area{
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+text-align:center;
+}
+
+
+.upload-area:hover{
+border-color:#3b82f6;
+background:rgba(255,255,255,0.03);
+}
+
+
+/* ================= ICON ================= */
+
+.upload-icon{
+font-size:55px;
+color:#3b82f6;
+margin-bottom:15px;
+}
+
+
+/* ================= TEXT ================= */
+
+.upload-text{
+font-size:18px;
+margin-bottom:8px;
+}
+
+.upload-small{
+font-size:13px;
+opacity:0.7;
+}
+
+
+/* ================= FILE INPUT ================= */
+
+input[type="file"]{
+margin-top:10px;
+color:white;
+}
+
+
+/* ================= BUTTON ================= */
+
+.upload-btn{
+width:100%;
+padding:10px;
+font-weight:500;
+transition:0.3s;
+}
+
+.upload-btn:hover{
+transform:translateY(-2px);
+box-shadow:0 10px 20px rgba(0,0,0,0.4);
+}
+
+
+/* ================= IMAGE PREVIEW ================= */
+
+.preview-img{
+border-radius:10px;
+margin-top:10px;
+max-height:350px;
+object-fit:cover;
+}
+
+
+/* ================= PROGRESS BAR ================= */
+
+.progress-bar{
+animation:growBar 1.2s ease;
+}
+
+@keyframes growBar{
+from{
+width:0;
+}
+}
+
+
+/* ================= SUMMARY TEXT ================= */
+
+.summary-text{
+font-size:18px;
+font-weight:500;
+}
+
+
+
+

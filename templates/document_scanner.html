@@ -1,0 +1,146 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'css/documnet_scanner.css' %}">
+<!--<link rel="stylesheet" href="{% static 'css/style.css' %}">-->
+<!--<link rel="stylesheet" href="{% static 'css/home.css' %}">-->
+
+<h3 class="mb-4 page-title">Document Scanner</h3>
+
+<div class="card upload-card p-4 mb-4 shadow-sm">
+{% if form.errors %}
+
+<div class="alert alert-danger">
+
+{{ form.errors }}
+
+</div>
+
+{% endif %}
+<form method="POST" enctype="multipart/form-data">
+
+{% csrf_token %}
+{{ form.as_p }}
+
+<button class="btn btn-primary upload-btn">
+Upload Document
+</button>
+
+</form>
+
+</div>
+
+
+{% if results %}
+
+<h4 class="mt-4 dashboard-title">AI Content Analysis Dashboard</h4>
+
+<div class="card dashboard-card p-4 mb-4">
+
+<p><strong>AI Generated Content → {{ ai_percent }}%</strong></p>
+
+<div class="progress mb-3 progress-animate">
+<div class="progress-bar bg-danger"
+role="progressbar"
+style="width: {{ ai_percent }}%">
+{{ ai_percent }}%
+</div>
+</div>
+
+<p><strong>Human Written Content → {{ human_percent }}%</strong></p>
+
+<div class="progress mb-3 progress-animate">
+<div class="progress-bar bg-success"
+role="progressbar"
+style="width: {{ human_percent }}%">
+{{ human_percent }}%
+</div>
+</div>
+
+<p><strong>Mixed / Uncertain Content → {{ mixed_percent }}%</strong></p>
+
+<div class="progress mb-3 progress-animate">
+<div class="progress-bar bg-warning"
+role="progressbar"
+style="width: {{ mixed_percent }}%">
+{{ mixed_percent }}%
+</div>
+</div>
+
+<p class="confidence text-center fs-5">
+Overall Confidence → <strong>{{ confidence }}%</strong>
+</p>
+
+</div>
+
+
+<h4 class="mt-4 result-title">AI Detection Results</h4>
+
+<div class="card result-card p-3 mb-4">
+
+{% for r in results %}
+
+{% if r.classification == "AI" %}
+
+<p class="ai-text sentence-card">
+{{ r.sentence }} <br>
+AI Probability: {{ r.ai_probability }} |
+Human Probability: {{ r.human_probability }}
+</p>
+
+{% elif r.classification == "Human" %}
+
+<p class="human-text sentence-card">
+{{ r.sentence }} <br>
+AI Probability: {{ r.ai_probability }} |
+Human Probability: {{ r.human_probability }}
+</p>
+
+{% else %}
+
+<p class="mixed-text sentence-card">
+{{ r.sentence }} <br>
+AI Probability: {{ r.ai_probability }} |
+Human Probability: {{ r.human_probability }}
+</p>
+
+{% endif %}
+
+<hr>
+
+{% endfor %}
+
+</div>
+
+
+<!-- DOWNLOAD BUTTON -->
+{% if scan_id %}
+
+<div class="text-center mt-4">
+
+{% if user.is_authenticated %}
+
+<a href="{% url 'download_report' scan_id %}" class="btn btn-success">
+Download Report
+</a>
+
+{% else %}
+
+<a href="{% url 'login' %}" class="btn btn-warning">
+Login to Download Report
+</a>
+
+{% endif %}
+
+</div>
+
+{% endif %}
+
+{% endif %}
+
+
+<script src="{% static 'js/document_scanner.js' %}"></script>
+
+{% endblock %}

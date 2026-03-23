@@ -1,0 +1,98 @@
+.page-title{
+text-align:center;
+color:white;
+font-size:40px;
+font-weight:600;
+margin-bottom:30px;
+}
+
+.upload-card{
+background:rgba(10,20,40,0.85);
+border:none;
+border-radius:14px;
+backdrop-filter: blur(6px);
+color:white;
+max-width:700px;
+margin:auto;
+}
+
+.upload-btn{
+padding:10px 24px;
+font-weight:500;
+transition:0.3s;
+}
+
+.upload-btn:hover{
+transform:translateY(-2px);
+box-shadow:0 8px 20px rgba(0,0,0,0.4);
+}
+.dashboard-card{
+background:rgba(10,20,40,0.85);
+border:none;
+border-radius:14px;
+color:white;
+max-width:900px;
+margin:auto;
+backdrop-filter: blur(6px);
+}
+.progress-animate .progress-bar{
+animation:progressGrow 1.5s ease;
+}
+
+@keyframes progressGrow{
+from{
+width:0;
+}
+}
+.result-card{
+background:rgba(10,20,40,0.85);
+border:none;
+border-radius:14px;
+color:white;
+max-width:900px;
+margin:auto;
+backdrop-filter: blur(6px);
+}
+
+.ai-text{
+color:#f87171;
+}
+
+.human-text{
+color:#4ade80;
+}
+
+.mixed-text{
+color:#facc15;
+}
+.sentence-card{
+padding:10px;
+border-radius:8px;
+transition:0.3s;
+}
+
+.sentence-card:hover{
+background:rgba(255,255,255,0.05);
+transform:translateX(5px);
+}
+.btn-success,
+.btn-warning{
+padding:10px 26px;
+font-weight:500;
+transition:0.3s;
+}
+
+.btn-success:hover,
+.btn-warning:hover{
+transform:translateY(-2px);
+box-shadow:0 10px 20px rgba(0,0,0,0.4);
+}
+
+.dashboard-title,
+.result-title{
+color:white;
+font-weight:600;
+text-align:center;
+margin-bottom:20px;
+text-shadow:0 0 10px rgba(255,255,255,0.25);
+}
